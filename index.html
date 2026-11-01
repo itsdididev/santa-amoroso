@@ -1,0 +1,368 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Santa Amoroso 🎅💕</title>
+<style>
+  :root{--red:#4f8a6b;--green:#4f8a6b;--cream:#f4f8f5;--gold:#a9c9b4;--ink:#2f3b35;--soft:#e7f1ea;--bd:#ced4da}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:1rem;line-height:1.5;color:var(--ink);
+    background:linear-gradient(160deg,#f6faf7,#e4efe8);min-height:100vh}
+  header{text-align:center;padding:28px 16px 8px}
+  header h1{margin:0;font-size:2.2rem;font-weight:500;color:#3d6e55}
+  header p{margin:6px 0 0;opacity:.8}
+  main{max-width:820px;margin:auto;padding:12px 16px 60px}
+  .tabs{display:flex;gap:8px;margin:16px 0}
+  .tabs button{flex:1;padding:.5rem 1rem;border:1px solid var(--green);background:#fff;color:var(--green);
+    border-radius:.375rem;font-weight:500;cursor:pointer;font-size:1rem}
+  .tabs button.active{background:var(--green);color:#fff}
+  .card{background:#fff;border:1px solid #0000001a;border-radius:.5rem;padding:1.25rem;margin-bottom:16px;
+    box-shadow:0 .125rem .25rem rgba(0,0,0,.075)}
+  .card h2{margin:0 0 12px;font-size:1.25rem;font-weight:500;color:#3d6e55}
+  .card h3{font-size:1.05rem;margin:14px 0 4px;color:#3d6e55}
+  label.f{display:block;font-weight:500;margin:10px 0 4px}
+  input[type=text],input[type=number],textarea,select{width:100%;padding:.375rem .75rem;border:1px solid var(--bd);
+    border-radius:.375rem;font:inherit;background:#fff}
+  input[type=text]:focus,input[type=number]:focus,textarea:focus,select:focus{outline:0;border-color:#8fbca5;box-shadow:0 0 0 .25rem rgba(79,138,107,.25)}
+  textarea{min-height:70px;resize:vertical}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{position:relative}
+  .chip input{position:absolute;opacity:0}
+  .chip span{display:inline-block;padding:.25rem .75rem;border-radius:.375rem;border:1px solid var(--bd);
+    background:#fff;cursor:pointer;user-select:none;transition:.15s;font-size:.95rem}
+  .chip span:hover{background:var(--soft)}
+  .chip input:checked+span{background:var(--green);color:#fff;border-color:var(--green)}
+  .chip.no input:checked+span{background:#6c757d;border-color:#6c757d}
+  .chip input:focus-visible+span{box-shadow:0 0 0 .25rem rgba(79,138,107,.35)}
+  .swatch span{display:flex;align-items:center;gap:6px}
+  .swatch i{width:16px;height:16px;border-radius:50%;border:1px solid #0003;display:inline-block}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .hint{font-size:.875rem;color:#6c757d;margin:0 0 8px}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+  .btn{padding:.375rem .75rem;border:1px solid var(--green);border-radius:.375rem;font-weight:400;cursor:pointer;font-size:1rem;
+    background:var(--green);color:#fff}
+  .btn:hover{background:#43775b}
+  .btn.alt{background:#2f6f57;border-color:#2f6f57} .btn.ghost{background:#fff;color:var(--green);border:1px solid var(--green)}
+  .btn.ghost:hover{background:var(--soft)}
+  #results{display:none}
+  .match{background:#d1e7dd;border:1px solid #badbcc;color:#0f5132;padding:.5rem 1rem;border-radius:.375rem;margin:8px 0}
+  .only{background:#fff3cd;border:1px solid #ffecb5;color:#664d03;padding:.5rem 1rem;border-radius:.375rem;margin:8px 0}
+  .idea{background:#e7f1ea;border:1px solid #c9dfd0;padding:.5rem 1rem;border-radius:.375rem;margin:8px 0}
+  .tag{display:inline-block;background:#fff;border:1px solid #0002;border-radius:50rem;padding:.1rem .6rem;margin:2px;font-size:.875rem}
+  .snow{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:-1}
+  .snow b{position:absolute;top:-20px;color:#fff;text-shadow:0 0 3px #9bb;animation:fall linear infinite}
+  @keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+  .bar{height:1rem;background:#e9ecef;border-radius:.375rem;overflow:hidden}
+  #barfill{height:100%;background:var(--green);width:0;transition:.3s}
+  .other{border-style:dashed!important}
+  .riddle .row2{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .riddle .row2 input{flex:1;min-width:140px}
+  .tastes{margin-top:16px;border:1px solid #0000001a;border-radius:.5rem;padding:.75rem 1rem;background:#fbfdfc}
+  .tastes summary{cursor:pointer;font-weight:500;color:#3d6e55}
+  .tastes h4{margin:14px 0 2px;font-size:1rem;color:#3d6e55}
+  .ok{color:var(--green);font-weight:700}
+  textarea#code{font-family:monospace;font-size:.8rem;min-height:90px}
+</style>
+</head>
+<body>
+<div class="snow" id="snow"></div>
+<header>
+  <h1>🎅 Santa Amoroso 💕</h1>
+  <p>Cuéntale a Santa lo que te gusta, sin pedir nada. Él se encarga de la magia.</p>
+</header>
+
+<main>
+  <div class="card" id="names">
+    <div class="row">
+      <div><label class="f" for="n0">Nombre de ella/él #1</label><input type="text" id="n0" placeholder="Tu nombre"></div>
+      <div><label class="f" for="n1">Nombre de ella/él #2</label><input type="text" id="n1" placeholder="Su nombre"></div>
+    </div>
+    <div class="actions"><button class="btn" id="start" type="button">Empezar 🎄</button></div>
+    <p class="hint">Modo secreto 🤫: cada uno llena su pestaña y la oculta. Solo se muestra lo que tienen en común y las ideas de Santa.</p>
+  </div>
+
+  <div class="tabs">
+    <button type="button" id="t0" class="active">💖 Persona 1</button>
+    <button type="button" id="t1">💙 Persona 2</button>
+  </div>
+
+  <div id="wizard">
+    <div class="bar"><div id="barfill"></div></div>
+    <p class="hint" id="stepTxt" style="text-align:center"></p>
+  </div>
+  <form id="form" autocomplete="off"></form>
+  <div class="actions" id="nav">
+    <button class="btn ghost" id="back" type="button">← Atrás</button>
+    <button class="btn" id="next" type="button">Siguiente →</button>
+  </div>
+
+  <div class="actions" id="fin">
+    <button class="btn" id="go" type="button">✨ Ver ideas de Santa</button>
+    <button class="btn ghost" id="reset" type="button">Limpiar esta persona</button>
+  </div>
+
+  <div class="card" id="extra" style="margin-top:20px">
+    <h2>📲 Cada quien en su celular</h2>
+    <p class="hint">Si llenan por separado: copia tu código, mándaselo y pégalo en la otra persona ("Importar").</p>
+    <textarea id="code" placeholder="Código para compartir..."></textarea>
+    <div class="actions">
+      <button class="btn alt" id="exp" type="button">Generar mi código</button>
+      <button class="btn alt" id="imp" type="button">Importar código a la pestaña actual</button>
+    </div>
+  </div>
+
+  <section id="results" class="card">
+    <h2>🎁 Lo que Santa descubrió</h2>
+    <div id="out"></div>
+  </section>
+</main>
+
+<script>
+const SECTIONS = [
+  {id:"tema", title:"🎄 Temática y estilo", hint:"Elige lo que te late (varias).", type:"chips",
+   opts:["Romántico","Minimalista","Vintage / retro","Cozy / acogedor","Kawaii / tierno","Elegante","Deportivo","Geek / gamer","Boho","Aesthetic","Naturaleza","Artístico / DIY","Casual / cómodo","Streetwear","Clásico","Moderno / tech","Divertido","Navideño tradicional","Pareja a juego","Mediterráneo","Cottagecore","Sporty chic"]},
+  {id:"deporte", title:"🏊🏀 Deporte y entrenamiento", hint:"Natación, basket, gym y más.", type:"chips",
+   opts:["Natación","Basketball","Gym / pesas","Running","Yoga / pilates","Ciclismo","Senderismo","Crossfit","Voleibol","Fútbol","Calistenia","Estiramiento / movilidad","Gorro de natación","Googles / lentes de nado","Traje de baño / short de nado","Toalla de microfibra","Bolsa deportiva / mochila","Balón de basket","Tenis de basket","Calcetas deportivas","Rodilleras / muñequeras","Botella / termo","Reloj deportivo / smartwatch","Audífonos para nadar","Banda de resistencia","Foam roller / pistola de masaje","Proteína / suplementos","Snacks fitness"]},
+  {id:"trabajo", title:"💻🩺 Trabajo y estudio", hint:"Programación, ingeniería, fisioterapia, docencia.", type:"chips",
+   opts:["Programación","Ingeniería","Fisioterapia","Docencia / clases","Setup de escritorio","Teclado mecánico","Mouse ergonómico","Monitor / soporte","Lámpara de escritorio","Silla / cojín ergonómico","Mochila para laptop","Libretas / agendas","Plumas / marcadores","Planner","Termo / taza para el trabajo","Audífonos con cancelación","Libros técnicos","Camisa / bata de trabajo","Zapatos cómodos para trabajar","Material de fisio (camilla, kinesiotape)","Pizarrón / material didáctico","Gadgets geek","Cursos / certificaciones","Bolso de trabajo","Organizador de cables"]},
+  {id:"ropa", title:"👕 Ropa", type:"chips",
+   opts:["Playeras","Camisas","Sudaderas / hoodies","Suéteres","Chamarra / abrigo","Pants / joggers","Jeans","Shorts","Vestidos / faldas","Pijamas","Ropa deportiva","Ropa térmica","Ropa interior","Calcetines divertidos","Playera de equipo / jersey","Pijama a juego en pareja","Bufanda / gorro / guantes","Ropa para el frío","Ropa de playa / alberca","Ropa formal / trabajo"]},
+  {id:"calzado", title:"👟 Calzado", type:"chips",
+   opts:["Tenis de basket","Tenis para correr","Tenis casuales","Zapatos formales","Botas","Sandalias / chanclas de alberca","Pantuflas","Tenis de gym","Zapatos cómodos para trabajar"]},
+  {id:"peinado", title:"💇 Peinado y cabello", type:"chips",
+   opts:["Cabello corto","Cabello largo","Cola / coleta","Trenzas","Chongo / moño","Cabello suelto","Cabello rizado","Cabello lacio","Barba cuidada","Cabello al ras","Ligas / scrunchies","Pasadores / clips","Diademas / bandas deportivas","Gorros para cabello","Gorra / bucket hat","Cepillo / peine especial","Shampoo / acondicionador","Protector para cloro (nado)","Mascarilla capilar","Aceite para cabello / barba","Secadora / plancha","Corte de cabello / spa"]},
+  {id:"accesorios", title:"💍 Accesorios", type:"chips",
+   opts:["Collar","Pulsera","Anillo","Aretes","Relojes","Pulseras a juego en pareja","Cadena / dije con significado","Gorras","Lentes de sol","Cartera","Cinturón","Mochila / bolso","Bolsa de gym","Llaveros","Fundas de celular","Bufanda","Gorro de invierno","Guantes","Mascada / pañuelo","Cartera / tarjetero","Termo / botella","Paraguas","Pines / parches"]},
+  {id:"casa", title:"🏠🍳 En casa y comida", hint:"Les gusta comer y hacer cosas en casa.", type:"chips",
+   opts:["Cocinar","Hornear / repostería","Comer rico","Café","Té","Vino / cocteles","Snacks","Postres","Comida saludable / meal prep","Cenas en casa","Maratón de pelis y series","Videojuegos","Juegos de mesa","Manualidades / DIY","Plantas","Decoración del hogar","Velas / aromas","Cobijas / cojines","Aire fryer / licuadora / cocina","Utensilios de cocina","Set de especias","Kit de cocteles","Cafetera / molino","Tabla de quesos / charcutería","Vajilla bonita","Vasos / tazas","Libros de recetas","Caja de snacks / dulces","Delantal a juego","Kit de sushi / pasta / pizza"]},
+  {id:"hobbies", title:"🎶 Hobbies y planes", type:"chips",
+   opts:["Series / películas","Música","Videojuegos","Leer","Viajar","Fotografía","Escape rooms","Conciertos","Salir a comer","Caminar / explorar","Spa / masaje","Picnic","Pintar / dibujar","Tocar un instrumento","Rompecabezas","Cursos juntos","Karaoke","Cine","Parque / naturaleza","Playas / albercas","Partidos de basket","Cartas / juegos de mesa"]},
+  {id:"colores", title:"🎨 Colores que amas", type:"colors",
+   opts:{"Rojo":"#d62839","Rosa":"#f6a5c0","Vino":"#7b1e3a","Naranja":"#f28c28","Amarillo":"#f4d35e","Verde":"#2e8b57","Menta":"#a8e6cf","Azul":"#3a6ea5","Celeste":"#9fd3f5","Morado":"#8e5bb5","Lila":"#cdb4db","Beige":"#e8d8c3","Café":"#7a4e2d","Negro":"#222","Blanco":"#fff","Gris":"#999","Dorado":"#d4af37","Plateado":"#c0c0c0","Verde salvia":"#9caf88","Verde oliva":"#708238","Verde bosque":"#1f4d3a","Turquesa":"#2ab7ca","Marino":"#1b2a49","Coral":"#ff7f6e","Mostaza":"#d9a21b","Crema":"#f5efe0","Terracota":"#c4683f","Fucsia":"#d63384"}},
+  {id:"coloresNo", title:"🚫 Colores que NO", type:"colors", cls:"no",
+   opts:{"Rojo":"#d62839","Rosa":"#f6a5c0","Naranja":"#f28c28","Amarillo":"#f4d35e","Verde":"#2e8b57","Azul":"#3a6ea5","Morado":"#8e5bb5","Café":"#7a4e2d","Negro":"#222","Blanco":"#fff","Gris":"#999","Neón":"#39ff14"}},
+  {id:"series", title:"📺🎬 Series, películas y anime", hint:"Universos que aman: sirven para regalos temáticos.", type:"chips",
+   opts:["Avatar: la leyenda de Aang","La leyenda de Korra","Loki","Marvel","DC","Arcane","One Piece","Los Juegos del Hambre","Harry Potter","El Señor de los Anillos","Star Wars","Stranger Things","Studio Ghibli","Naruto","Attack on Titan","Spy x Family","Demon Slayer","Jujutsu Kaisen","Friends","The Office","Grey's Anatomy","Game of Thrones","Wednesday","Bridgerton","Percy Jackson","Dune","Disney","Pixar","Lilo y Stitch","K-dramas","Breaking Bad","Rick y Morty","Los Simpson","Gravity Falls","Doctor House"]},
+  {id:"merch", title:"🛍️ Regalos de fandom que te harían feliz", type:"chips",
+   opts:["Playera temática","Sudadera / hoodie temática","Pijama temática","Funko Pop","Figura de acción","LEGO / set de armar","Póster / lámina","Taza temática","Llavero","Peluche","Libro de arte (artbook)","Libro / novela del universo","Manga / cómic","Cojín temático","Lámpara temática","Mousepad / tapete de escritorio","Stickers / pines","Varita / réplica / accesorio","Rompecabezas","Juego de mesa temático","Blu-ray / colección","Cuadro / marco temático","Calcetines temáticos","Bolsa / mochila temática"]},
+  {id:"musica", title:"🎵 Música", type:"chips",
+   opts:["Pop","Rock","Indie","K-pop","Reggaetón","Lofi / chill","Clásica / instrumental","Bandas sonoras (soundtracks)","Rap / hip hop","Salsa / cumbia","Jazz","Electrónica","Baladas","Regional mexicano","Vinilos","Audífonos","Bocina bluetooth","Boletos de concierto","Tocadiscos","Playlist personalizada","Ukulele / instrumento","Karaoke / micrófono","Merch de banda"]},
+  {id:"juegos", title:"🎮 Videojuegos y juegos", type:"chips",
+   opts:["Zelda","Mario","Pokémon","Minecraft","League of Legends","Valorant","Hades","Stardew Valley","Animal Crossing","Hollow Knight","Overcooked","It Takes Two","NBA 2K","Fortnite","Nintendo Switch","PlayStation","PC gamer","Tarjeta Steam / eShop","Control extra","Teclado / mouse gamer","Juegos cooperativos","Juegos de mesa","Cartas (Uno, Exploding Kittens)","Rompecabezas","Escape room en casa","Dungeons & Dragons"]},
+  {id:"libros", title:"📚 Libros y lectura", type:"chips",
+   opts:["Fantasía","Ciencia ficción","Romance","Manga / novela gráfica","Cómics de Marvel / DC","Terror / thriller","Programación / tecnología","Ciencia / anatomía / fisioterapia","Ingeniería","Desarrollo personal","Biografías","Poesía","Libros de cocina","Ediciones especiales","Lámpara de lectura","Separadores / marcapáginas","Kindle / e-reader","Suscripción de libros"]},
+  {id:"personal", title:"🧴 Cosas personales (consentirse)", type:"chips",
+   opts:["Skincare","Perfume / colonia","Crema corporal","Labiales / maquillaje","Kit de baño / bombas de baño","Bata / pijama cómoda","Masajeador","Spa en casa","Joyero / organizador","Cuidado de pies","Protector solar","Mascarillas","Velas aromáticas","Cuaderno / diario","Kit de viaje","Cepillo eléctrico","Rasuradora / afeitado","Cuidado de barba","Desodorante / cuidado personal","Toalla / bata de baño suave","Almohada / cobija especial","Difusor de aromas","Botella de agua bonita"]},
+  {id:"personalizado", title:"💌 Detalles personalizados y con significado", type:"chips",
+   opts:["Foto enmarcada","Álbum de fotos","Collage / caja de recuerdos","Carta escrita a mano","Mapa de estrellas","Nombres o iniciales grabados","Playlist con dedicatoria","Video de recuerdos","Lámpara con foto","Rompecabezas con foto","Taza con foto","Cupones (masaje, cena, cita)","Libro de “nosotros”","Pulseras o collares a juego","Caja “ábrelo cuando…”","Mapa para rascar","Cuadro de coordenadas","Scrapbook","Regalo hecho a mano","Calendario de adviento en pareja"]},
+  {id:"futuro", title:"🏡 Nuestro futuro juntos y hogar", hint:"Decoración, casa y cosas que queremos construir.", type:"chips",
+   opts:["Plantas","Cuadros / pósters","Cobijas y cojines","Lámparas LED / luces cálidas","Velas","Sábanas / edredón","Cortinas","Tapetes","Estantes / repisas","Rincón gamer","Rincón de lectura","Rincón de home office","Mini gym en casa","Huerto / jardín de hierbas","Juego de ollas / sartenes","Vajilla","Cafetera","Robot aspiradora","Aire fryer / horno","Set de cuchillos","Utensilios de cocina","Maletas de viaje","Caja de ahorro para viajes","Marco de fotos para pared","Adornos navideños con fecha","Mascota","Mesa de comedor","Sillón / sofá","Almohadas / ropa de cama","Espejo decorativo","Organizadores"]},
+  {id:"experiencias", title:"✨ Experiencias para regalar", type:"chips",
+   opts:["Cena especial","Spa / masaje en pareja","Boletos de concierto","Viaje corto / escapada","Clase de cocina juntos","Escape room","Partido de basket","Día en la playa o alberca","Cabaña / glamping","Sesión de fotos","Cata de vino / café","Museo / exposición","Parque temático","Cine privado en casa","Pícnic","Clase de baile","Maratón de películas","Cursos juntos","Taller de manualidades","Boletos de avión"]},
+  {id:"uso", title:"🧭 ¿Para qué lo usarías?", type:"chips",
+   opts:["Diario","Salir / citas","Trabajo / estudio","Casa","Viajes","Ejercicio","Decoración","Experiencias en pareja","Para presumir","Para consentirme"]},
+  {id:"cat", title:"🎁 Categorías que te encantan", type:"chips",
+   opts:["Ropa","Calzado","Accesorios / joyería","Perfumes","Skincare / cuidado","Tecnología","Libros","Juegos / hobbies","Cocina / comida","Peluches / detalles lindos","Decoración","Deporte","Arte / papelería","Experiencias / salidas","Música","Plantas","Cocina / hornear","Gadgets geek","Cuidado de cabello","Equipo de nado","Equipo de basket","Cosas para el trabajo","Fisioterapia / recuperación muscular","Papelería de ingeniería","Fotos / recuerdos personalizados","Cartas / detalles hechos a mano"]},
+  {id:"catNo", title:"🙅 Categorías que prefieres evitar", type:"chips", cls:"no",
+   opts:["Ropa","Calzado","Joyería","Perfumes","Tecnología","Peluches","Decoración","Dulces","Libros","Cosas que ocupan espacio"]},
+  {id:"tallas", title:"📏 Tallas", type:"sizes"},
+  {id:"mats", title:"🧵 Materiales / sabores", type:"chips",
+   opts:["Algodón","Lana suave","Cuero","Plata","Oro","Madera","Cerámica","Dulce","Salado","Chocolate","Café / té","Sin alcohol","Microfibra","Dri-fit / secado rápido","Neopreno","Acero inoxidable","Vidrio","Silicón","Mezclilla","Tela suave / fleece","Sin perfume","Picante","Vegano / sin gluten"]},
+  {id:"alergias", title:"⚠️ Alergias o cosas a evitar", type:"text", ph:"Ej. látex, nueces, lana que pica, perfumes muy fuertes..."},
+  {id:"sorpresa", title:"🎭 Tipo de sorpresa", type:"select",
+   opts:["Algo útil","Algo romántico","Algo divertido","Experiencia / cita","Hecho a mano","Una mezcla de todo"]},
+  {id:"presu", title:"💸 Presupuesto aproximado por regalo (opcional)", type:"number", ph:"Ej. 500"},
+  {id:"extra", title:"💌 Pistas extra para Santa", type:"text", ph:"Algo que viste, mencionaste o te hizo ilusión últimamente..."},
+  {id:"riddle", title:"🧩 Tu sugerencia secreta con acertijo", type:"riddle"}
+];
+
+const SIZES = [["Ropa superior",["XS","S","M","L","XL","XXL"]],["Pantalón",["26","28","30","32","34","36","38"]],["Calzado",["5","6","7","8","9","10","11","12"]],["Traje de baño / short",["XS","S","M","L","XL","XXL"]],["Gorra / gorro",["Chica","Mediana","Grande","Ajustable"]],["Anillo",null],["Muñeca / reloj",null],["Otra",null]];
+const state=[{},{}];
+let cur=0;
+const $=s=>document.querySelector(s);
+const form=$("#form");
+
+function build(){
+  form.innerHTML="";
+  SECTIONS.forEach(s=>{
+    const c=document.createElement("div");c.className="card";
+    let h=`<h2>${s.title}</h2>`;
+    if(s.hint)h+=`<p class="hint">${s.hint}</p>`;
+    if(s.type==="chips")
+      h+=`<div class="chips">${s.opts.map(o=>chip(s.id,o,s.cls||"")).join("")}</div>`;
+    else if(s.type==="colors")
+      h+=`<div class="chips">${Object.entries(s.opts).map(([n,c])=>chip(s.id,n,(s.cls||"")+" swatch",`<i style="background:${c}"></i>${n}`)).join("")}</div>`;
+    else if(s.type==="sizes")
+      h+=`<div class="row">${SIZES.map(([n,o])=>`<div><label class="f">${n}</label>${o?
+        `<select data-k="talla_${n}"><option value="">—</option>${o.map(x=>`<option>${x}</option>`).join("")}</select>`:
+        `<input type="text" data-k="talla_${n}" placeholder="Opcional">`}</div>`).join("")}</div>`;
+    else if(s.type==="riddle")
+      h+=`<p class="hint">Deja un regalo o temática que te encantaría, escondido en un acertijo para que el otro lo descubra.</p>
+        <label class="f">🎁 Mi sugerencia (regalo o temática)</label><input type="text" data-k="sug" placeholder="Ej. Una noche de cine con manta y palomitas">
+        <label class="f">🧩 Acertijo</label><textarea data-k="acertijo" placeholder="Ej. Tiene pantalla pero no es un celular, se disfruta en pareja con luz apagada..."></textarea>
+        <label class="f">🔑 Respuesta del acertijo (una palabra)</label><input type="text" data-k="resp" placeholder="Ej. cine">
+        <label class="f">💡 Pista (opcional)</label><input type="text" data-k="pista" placeholder="Ej. Lleva palomitas">
+        <p class="hint">Ideas: “Soy suave y abrigo en invierno, me abrazas sin ser persona” → manta.</p>`;
+    else if(s.type==="text")h+=`<textarea data-k="${s.id}" placeholder="${s.ph||""}"></textarea>`;
+    else if(s.type==="number")h+=`<input type="number" min="0" data-k="${s.id}" placeholder="${s.ph||""}">`;
+    else if(s.type==="select")
+      h+=`<select data-k="${s.id}"><option value="">—</option>${s.opts.map(x=>`<option>${x}</option>`).join("")}</select>`;
+    if(s.type==="chips"||s.type==="colors")h+=`<input type="text" class="other" data-o="${s.id}" data-cls="${s.cls||""}" placeholder="✏️ Otro: escribe y presiona Enter" style="margin-top:10px">`;
+    c.innerHTML=h;form.appendChild(c);
+  });
+  load();
+}
+function addCustom(inp,v){
+  const w=document.createElement("div");w.innerHTML=chip(inp.dataset.o,v,inp.dataset.cls||"");
+  const el=w.firstElementChild;el.querySelector("input").checked=true;
+  inp.previousElementSibling.appendChild(el);
+}
+form.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&e.target.dataset.o){e.preventDefault();const v=e.target.value.trim();
+    if(v){const ex=[...form.querySelectorAll(`[data-g="${e.target.dataset.o}"]`)].find(i=>i.value.toLowerCase()===v.toLowerCase());
+      if(ex)ex.checked=true;else addCustom(e.target,v);e.target.value="";save()}}
+});
+function chip(g,v,cls,label){return `<label class="chip ${cls}"><input type="checkbox" data-g="${g}" value="${v}"><span>${label||v}</span></label>`}
+
+function save(){
+  const d={};
+  form.querySelectorAll("[data-g]:checked").forEach(i=>(d[i.dataset.g]=d[i.dataset.g]||[]).push(i.value));
+  form.querySelectorAll("[data-k]").forEach(i=>{if(i.value.trim())d[i.dataset.k]=i.value.trim()});
+  state[cur]=d;
+  localStorage.setItem("santaAmoroso",JSON.stringify({state,names:[$("#n0").value,$("#n1").value]}));
+}
+function load(){
+  const d=state[cur]||{};
+  Object.keys(d).forEach(g=>{if(Array.isArray(d[g]))d[g].forEach(v=>{
+    if(![...form.querySelectorAll(`[data-g="${g}"]`)].some(i=>i.value===v)){const o=form.querySelector(`[data-o="${g}"]`);if(o)addCustom(o,v)}})});
+  form.querySelectorAll("[data-g]").forEach(i=>i.checked=(d[i.dataset.g]||[]).includes(i.value));
+  form.querySelectorAll("[data-k]").forEach(i=>i.value=d[i.dataset.k]||"");
+}
+function switchTo(n){save();cur=n;step=0;show();$("#t0").classList.toggle("active",n===0);$("#t1").classList.toggle("active",n===1);load();window.scrollTo({top:0,behavior:"smooth"})}
+
+const name=i=>$("#n"+i).value.trim()||("Persona "+(i+1));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const tags=a=>a.map(x=>`<span class="tag">${esc(x)}</span>`).join("");
+const inter=(a=[],b=[])=>a.filter(x=>b.includes(x));
+const diff=(a=[],b=[])=>a.filter(x=>!b.includes(x));
+
+function ideas(a,b){
+  const likes=[...(a.tema||[]),...(b.tema||[])];
+  const cats=[...new Set([...(a.cat||[]),...(b.cat||[])])];
+  const avoid=[...new Set([...(a.catNo||[]),...(b.catNo||[])])];
+  const common=inter(a.cat,b.cat);
+  const colors=inter(a.colores,b.colores);
+  const bad=new Set([...(a.coloresNo||[]),...(b.coloresNo||[])]);
+  const okColors=(colors.length?colors:[...new Set([...(a.colores||[]),...(b.colores||[])])]).filter(c=>!bad.has(c));
+  const themes=[...new Set(likes)].slice(0,3).join(" / ")||"lo que más los identifica";
+  const gen=["deporte","trabajo","ropa","calzado","peinado","accesorios","casa","hobbies","series","merch","musica","juegos","libros","personal","personalizado","futuro","experiencias"];
+  const specific=gen.flatMap(k=>inter(a[k],b[k]).slice(0,2));
+  const pool=(common.length?common:cats).filter(c=>!avoid.includes(c));
+  const col=okColors.slice(0,2).join(" y ")||"colores que les gusten";
+  const out=pool.slice(0,4).map(c=>`Algo de <b>${c}</b> con vibra <b>${themes}</b> en tonos <b>${col}</b>.`);
+  specific.slice(0,8).forEach(s=>out.push(`Algo relacionado con <b>${s}</b> (les gusta a los dos) en tonos <b>${col}</b>.`));
+  return out;
+}
+
+function results(){
+  save();
+  const [a,b]=state;const A=name(0),B=name(1);
+  let h="";
+  const row=(t,x,y)=>{
+    const c=inter(x,y);
+    if(!c.length)return"";
+    return `<h3>${t}</h3><div class="match">💞 <b>En común:</b> ${tags(c)}</div>`;
+  };
+  SECTIONS.filter(s=>["chips","colors"].includes(s.type)).forEach(s=>{h+=row(s.title,a[s.id],b[s.id])});
+  const full=(t,x=[],y=[])=>{
+    if(!x.length&&!y.length)return"";
+    const c=inter(x,y),oa=diff(x,y),ob=diff(y,x);
+    return `<h4>${t}</h4>`+
+      (c.length?`<div class="match">💞 <b>Los dos:</b> ${tags(c)}</div>`:"")+
+      (oa.length?`<div class="only"><b>${esc(A)}:</b> ${tags(oa)}</div>`:"")+
+      (ob.length?`<div class="only"><b>${esc(B)}:</b> ${tags(ob)}</div>`:"");
+  };
+  let g="";
+  SECTIONS.filter(s=>["chips","colors"].includes(s.type)).forEach(s=>{g+=full(s.title,a[s.id],b[s.id])});
+  g+=`<h4>📏 Tallas</h4><div class="only"><b>${esc(A)}:</b> ${esc(tallas(a))||"—"}<br><b>${esc(B)}:</b> ${esc(tallas(b))||"—"}</div>`;
+  [["sorpresa","🎭 Tipo de sorpresa"],["presu","💸 Presupuesto"],["alergias","⚠️ Evitar / alergias"],["extra","💌 Pistas extra"]].forEach(([k,t])=>{
+    if(a[k]||b[k])g+=`<h4>${t}</h4><div class="only"><b>${esc(A)}:</b> ${esc(a[k]||"—")}<br><b>${esc(B)}:</b> ${esc(b[k]||"—")}</div>`;
+  });
+  h+=`<details class="tastes"><summary>📋 Ver los gustos de cada uno (por si no te convencen las sugerencias)</summary>${g}</details>`;
+  
+  const rid=(d,from,to)=>d.acertijo?`<div class="idea riddle"><b>🧩 Acertijo de ${from} para ${to}:</b><br>“${d.acertijo}”
+    <div class="row2"><input type="text" placeholder="Tu respuesta..." data-ans="${(d.resp||"").replace(/"/g,"&quot;")}">
+    <button class="btn alt" type="button" data-act="guess" style="padding:8px 14px">Probar</button>
+    <button class="btn ghost" type="button" data-act="hint" data-h="${(d.pista||"").replace(/"/g,"&quot;")}" style="padding:8px 14px">Pista</button>
+    <button class="btn ghost" type="button" data-act="give" data-s="${(d.sug||"").replace(/"/g,"&quot;")}" style="padding:8px 14px">Me rindo</button></div>
+    <div class="msg" style="margin-top:8px"></div></div>`:"";
+  h=`<h3>🧩 Acertijos secretos</h3>`+(rid(a,A,B)+rid(b,B,A)||"<p>Aún no hay acertijos.</p>")+h;
+  const id=ideas(a,b);
+  h=`<h3>🎅 Ideas generales de Santa</h3>`+(id.length?id.map(x=>`<div class="idea">${x}</div>`).join(""):`<p>Llenen más opciones para obtener ideas.</p>`)+h;
+  $("#out").innerHTML=h;$("#results").style.display="block";
+  $("#results").scrollIntoView({behavior:"smooth"});
+}
+const tallas=d=>Object.keys(d).filter(k=>k.startsWith("talla_")).map(k=>`${k.slice(6)}: ${d[k]}`).join(" · ");
+
+$("#t0").onclick=()=>switchTo(0);$("#t1").onclick=()=>switchTo(1);
+form.addEventListener("input",save);form.addEventListener("change",save);
+$("#n0").oninput=$("#n1").oninput=()=>{save();$("#t0").textContent="💖 "+name(0);$("#t1").textContent="💙 "+name(1)};
+$("#out").addEventListener("click",e=>{
+  const act=e.target.dataset.act;if(!act)return;
+  const box=e.target.closest(".riddle"),msg=box.querySelector(".msg"),inp=box.querySelector("input");
+  const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+  const give=box.querySelector("[data-act=give]").dataset.s;
+  if(act==="hint")msg.textContent="💡 "+(e.target.dataset.h||"Sin pista");
+  if(act==="give")msg.innerHTML=`<span class="ok">🎁 Era: ${give}</span>`;
+  if(act==="guess"){
+    if(norm(inp.value)&&norm(inp.value)===norm(inp.dataset.ans))msg.innerHTML=`<span class="ok">🎉 ¡Correcto! Sugerencia: ${give}</span>`;
+    else msg.textContent="❌ Casi... intenta otra vez"}
+});
+$("#go").onclick=results;
+$("#reset").onclick=()=>{state[cur]={};load();save()};
+$("#exp").onclick=()=>{save();$("#code").value=btoa(unescape(encodeURIComponent(JSON.stringify({n:[$("#n"+cur).value],d:state[cur]}))))};
+$("#imp").onclick=()=>{try{const o=JSON.parse(decodeURIComponent(escape(atob($("#code").value.replace(/\s+/g,"")))));
+  if(!o||!o.d)throw 0;
+  state[cur]=o.d;if(o.n&&o.n[0])$("#n"+cur).value=o.n[0];load();save();
+  $("#t0").textContent="💖 "+name(0);$("#t1").textContent="💙 "+name(1);
+  alert("✅ Importado en la pestaña de "+name(cur)+". Cambia de pestaña arriba si era para la otra persona.")}catch(e){alert("Código inválido o incompleto. Cópialo completo.")}};
+
+let step=-1;
+function show(){
+  const cs=[...form.children],n=cs.length,intro=step<0,done=step>=n;
+  $("#names").style.display=intro?"":"none";
+  document.querySelector(".tabs").style.display=intro?"none":"";
+  $("#wizard").style.display=(intro||done)?"none":"";
+  form.style.display=(!intro&&!done)?"":"none";
+  $("#nav").style.display=(intro||done)?"none":"";
+  $("#fin").style.display=done?"":"none";
+  $("#extra").style.display=done?"":"none";
+  cs.forEach((c,i)=>c.style.display=i===step?"":"none");
+  if(!intro&&!done){
+    $("#barfill").style.width=((step+1)/n*100)+"%";
+    $("#stepTxt").textContent=`Paso ${step+1} de ${n} · ${name(cur)}`;
+    $("#back").style.visibility=step===0?"hidden":"";
+    $("#next").textContent=step===n-1?"Terminar 🔒":"Siguiente →";
+  }
+  $("#start").style.display=intro?"":"none";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$("#start").onclick=()=>{save();step=0;show()};
+$("#next").onclick=()=>{save();step++;show();if(step>=form.children.length)alert("¡Listo, "+name(cur)+"! Tus respuestas quedaron en secreto 🤫")};
+$("#back").onclick=()=>{save();if(step>0){step--;show()}};
+try{const s=JSON.parse(localStorage.getItem("santaAmoroso")||"null");
+  if(s){s.state.forEach((x,i)=>state[i]=x);$("#n0").value=s.names[0]||"";$("#n1").value=s.names[1]||""}}catch(e){}
+$("#t0").textContent="💖 "+name(0);$("#t1").textContent="💙 "+name(1);
+build();show();
+
+const snow=$("#snow");
+for(let i=0;i<30;i++){const f=document.createElement("b");f.textContent="❄";
+  f.style.left=Math.random()*100+"%";f.style.fontSize=(10+Math.random()*16)+"px";
+  f.style.animationDuration=(8+Math.random()*10)+"s";f.style.animationDelay=(-Math.random()*15)+"s";snow.appendChild(f)}
+</script>
+</body>
+</html>
+
+
+

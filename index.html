@@ -104,11 +104,11 @@
 
   <div class="card" id="extra" style="margin-top:20px">
     <h2>📲 Cada quien en su celular</h2>
-    <p class="hint">Si llenan por separado: copia tu código, mándaselo y pégalo en la otra persona ("Importar").</p>
+    <p class="hint">Si llenan por separado: 1) toca "Generar mi código" y mándaselo a la otra persona. 2) Cuando te manden el suyo, pégalo aquí y toca "Importar". Se guarda solo como la otra persona.</p>
     <textarea id="code" placeholder="Código para compartir..."></textarea>
     <div class="actions">
       <button class="btn alt" id="exp" type="button">Generar mi código</button>
-      <button class="btn alt" id="imp" type="button">Importar código a la pestaña actual</button>
+      <button class="btn alt" id="imp" type="button">Importar código de la otra persona</button>
     </div>
   </div>
 
@@ -324,9 +324,9 @@ $("#reset").onclick=()=>{state[cur]={};load();save()};
 $("#exp").onclick=()=>{save();$("#code").value=btoa(unescape(encodeURIComponent(JSON.stringify({n:[$("#n"+cur).value],d:state[cur]}))))};
 $("#imp").onclick=()=>{try{const o=JSON.parse(decodeURIComponent(escape(atob($("#code").value.replace(/\s+/g,"")))));
   if(!o||!o.d)throw 0;
-  state[cur]=o.d;if(o.n&&o.n[0])$("#n"+cur).value=o.n[0];load();save();
+  const t=1-cur;state[t]=o.d;if(o.n&&o.n[0])$("#n"+t).value=o.n[0];save();
   $("#t0").textContent="💖 "+name(0);$("#t1").textContent="💙 "+name(1);
-  alert("✅ Importado en la pestaña de "+name(cur)+". Cambia de pestaña arriba si era para la otra persona.")}catch(e){alert("Código inválido o incompleto. Cópialo completo.")}};
+  alert("✅ Respuestas de "+name(t)+" importadas. Ya puedes tocar «Ver ideas de Santa».")}catch(e){alert("Código inválido o incompleto. Cópialo completo.")}};
 
 let step=-1;
 function show(){

@@ -80,10 +80,9 @@
     </div>
     <div class="actions"><button class="btn" id="start" type="button">Empezar 🎄</button></div>
     <hr style="margin:18px 0;opacity:.2">
-    <label class="f">¿Ya tienes códigos? Pégalos y salta al final</label>
-    <textarea id="c0" placeholder="Código de la persona 1"></textarea>
-    <textarea id="c1" placeholder="Código de la persona 2" style="margin-top:8px"></textarea>
-    <div class="actions"><button class="btn alt" id="loadAll" type="button">Cargar códigos e ir al final 🎁</button></div>
+    <label class="f">💌 Código de tu amor (opcional)</label>
+    <textarea id="c1" placeholder="Pega aquí el código que te mandó"></textarea>
+    <div class="actions"><button class="btn alt" id="loadAll" type="button">Cargar su info 🎁</button></div>
     <p class="hint">Modo secreto 🤫: cada uno llena su pestaña y la oculta. Solo se muestra lo que tienen en común y las ideas de Santa.</p>
   </div>
 
@@ -354,16 +353,16 @@ function show(){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 $("#loadAll").onclick=()=>{
-  let ok=0;
   try{
-    [0,1].forEach(i=>{const v=$("#c"+i).value.replace(/\s+/g,"");if(!v)return;
-      const o=JSON.parse(decodeURIComponent(escape(atob(v))));if(!o||!o.d)throw 0;
-      state[i]=o.d;if(o.n&&o.n[0])$("#n"+i).value=o.n[0];ok++});
+    const v=$("#c1").value.replace(/\s+/g,"");if(!v){alert("Pega el código de tu amor.");return}
+    const o=JSON.parse(decodeURIComponent(escape(atob(v))));if(!o||!o.d)throw 0;
+    state[1]=o.d;if(o.n&&o.n[0])$("#n1").value=o.n[0];
   }catch(e){alert("Código inválido o incompleto. Cópialo completo.");return}
-  if(!ok){alert("Pega al menos un código.");return}
   cur=0;save();
   $("#t0").textContent="💖 "+name(0);$("#t1").textContent="💙 "+name(1);
-  step=form.children.length;show();
+  const mine=state[0]&&Object.keys(state[0]).length;
+  step=mine?form.children.length:0;show();load();
+  if(!mine)alert("✅ Info de "+name(1)+" cargada. Ahora llena la tuya.");
 };
 $("#start").onclick=()=>{save();step=0;show()};
 $("#next").onclick=()=>{save();step++;show();if(step>=form.children.length)alert("¡Listo, "+name(cur)+"! Tus respuestas quedaron en secreto 🤫")};

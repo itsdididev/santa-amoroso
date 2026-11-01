@@ -80,6 +80,11 @@
     </div>
     <div class="actions"><button class="btn" id="start" type="button">Empezar 🎄</button></div>
     <p class="hint">Modo secreto 🤫: llena tus respuestas; al final te damos tu código para tu amor y podrás cargar el suyo para ver coincidencias.</p>
+    <hr style="margin:18px 0;opacity:.2">
+    <label class="f">¿Ya llenaste antes? Pega los dos códigos y ve directo a los resultados</label>
+    <textarea id="p0" placeholder="Tu código"></textarea>
+    <textarea id="p1" placeholder="Código de tu amor" style="margin-top:8px"></textarea>
+    <div class="actions"><button class="btn alt" id="quick" type="button">Ver coincidencias 💞</button></div>
   </div>
 
   <div class="tabs">
@@ -352,6 +357,14 @@ function show(){
   $("#start").style.display=intro?"":"none";
   window.scrollTo({top:0,behavior:"smooth"});
 }
+$("#quick").onclick=()=>{
+  const dec=v=>{const o=JSON.parse(decodeURIComponent(escape(atob(v.replace(/\s+/g,"")))));if(!o||!o.d)throw 0;return o};
+  try{
+    const a=dec($("#p0").value),b=dec($("#p1").value);
+    state[0]=a.d;state[1]=b.d;$("#n0").value=(a.n&&a.n[0])||"";$("#n1").value=(b.n&&b.n[0])||"";
+  }catch(e){alert("Pega los dos códigos completos (el tuyo y el de tu amor).");return}
+  cur=0;save();step=form.children.length;show();results();
+};
 $("#start").onclick=()=>{cur=0;save();step=0;show()};
 $("#next").onclick=()=>{save();step++;show();if(step>=form.children.length)alert("¡Listo, "+name(cur)+"! Tus respuestas quedaron en secreto 🤫")};
 $("#back").onclick=()=>{save();if(step>0){step--;show()}};

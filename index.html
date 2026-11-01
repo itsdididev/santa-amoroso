@@ -368,8 +368,7 @@ $("#loadAll").onclick=()=>{
 $("#start").onclick=()=>{save();step=0;show()};
 $("#next").onclick=()=>{save();step++;show();if(step>=form.children.length)alert("¡Listo, "+name(cur)+"! Tus respuestas quedaron en secreto 🤫")};
 $("#back").onclick=()=>{save();if(step>0){step--;show()}};
-try{const s=JSON.parse(localStorage.getItem("santaAmoroso")||"null");
-  if(s){s.state.forEach((x,i)=>state[i]=x);$("#n0").value=s.names[0]||"";$("#n1").value=s.names[1]||""}}catch(e){}
+try{localStorage.removeItem("santaAmoroso")}catch(e){}
 $("#t0").textContent="💖 "+name(0);$("#t1").textContent="💙 "+name(1);
 build();show();
 

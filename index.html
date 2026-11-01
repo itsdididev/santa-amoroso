@@ -75,8 +75,8 @@
 <main>
   <div class="card" id="names">
     <div class="row">
-      <div><label class="f" for="n0">Nombre de ella/él #1</label><input type="text" id="n0" placeholder="Tu nombre"></div>
-      <div><label class="f" for="n1">Nombre de ella/él #2</label><input type="text" id="n1" placeholder="Su nombre"></div>
+      <div><label class="f" for="n0">Tu nombre</label><input type="text" id="n0" placeholder="Tu nombre"></div>
+      <div style="display:none"><input type="text" id="n1"></div>
     </div>
     <div class="actions"><button class="btn" id="start" type="button">Empezar 🎄</button></div>
     <hr style="margin:18px 0;opacity:.2">
@@ -355,6 +355,7 @@ function show(){
 $("#loadAll").onclick=()=>{
   try{
     const v=$("#c1").value.replace(/\s+/g,"");if(!v){alert("Pega el código de tu amor.");return}
+    if(!$("#n0").value.trim()){alert("Primero escribe tu nombre.");return}
     const o=JSON.parse(decodeURIComponent(escape(atob(v))));if(!o||!o.d)throw 0;
     state[1]=o.d;if(o.n&&o.n[0])$("#n1").value=o.n[0];
   }catch(e){alert("Código inválido o incompleto. Cópialo completo.");return}
